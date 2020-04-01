@@ -31,7 +31,7 @@ class Solution_demo:
     最坏，最好，平均时间复杂度均为O(nlogn)，它是不稳定排序。
     """
     def max_heapify(self, heap, root, heap_len): # heapify：调整一个完全二叉树，使其成为最大堆
-        p = root # 根节点，一般是 0
+        p = root # 根节点
         while p * 2 + 1 < heap_len: # 父节点是 p 时，其左右子节点为 2p+1 与 2p+2，父节点是 int((p-1)/2)，int 为下取整
             l, r = p * 2 + 1, p * 2 + 2
             if heap_len <= r or heap[r] < heap[l]: # 只有左节点，或左节点比右节点更大时，记录左节点
@@ -40,7 +40,7 @@ class Solution_demo:
                 nex = r
             if heap[p] < heap[nex]: # 若最大的节点比父节点更大，则交换父节点与该节点
                 heap[p], heap[nex] = heap[nex], heap[p]
-                p = nex
+                p = nex # 如果产生了交换使得子节点发生了改变，则要以新的子节点为父节点，对其底下的子节点 heapify
             else:
                 break
 
@@ -103,7 +103,8 @@ class MySolution():
 
     # 堆排
     def heapify(self, heap, root, heap_len): # root 和 heap_len 相当于 l 和 r
-        for p in range((heap_len-1)//2, root-1, -1):
+        p = root
+        while 2 * p + 1 <= heap_len:
             l, r = 2 * p + 1, 2 * p + 2
             if r <= heap_len and heap[l] < heap[r]:
                 max_child = r
@@ -111,12 +112,19 @@ class MySolution():
                 max_child = l
             if heap[p] < heap[max_child]:
                 heap[max_child], heap[p] = heap[p], heap[max_child]
+                p = max_child # 注意，若发生改变要对其子节点作 heapify，不要重新建堆
+            else:
+                break
+
+    def build_heap(self, nums):
+        for i in range((len(nums)-1)//2, -1, -1):
+            self.heapify(nums, i, len(nums)-1)
 
     def heapsort(self, nums):
-        self.heapify(nums, root=0, heap_len=len(nums)-1)
+        self.build_heap(nums)
         for i in range(len(nums)-1, 0, -1):
             nums[0], nums[i] = nums[i], nums[0]
-            self.heapify(nums, root=0, heap_len=i-1)
+            self.heapify(nums, 0, i-1)
 
     # 归并排
     def merge_sort(self, nums, l, r):
@@ -147,7 +155,7 @@ class MySolution():
 
 sort = MySolution()
 nums = [9, 6, 7, 8, 9, 2, 5, 4, 6, 2, 1, 6, 3, 3, 5, 1, 0]
-sort.bubble_sort(nums)
+sort.heapsort(nums)
 print(nums)
 
 
@@ -166,7 +174,7 @@ print(nums)
 2、复杂度：用比较次数计算
 常规遍历：n + (n - 1) + ... 1 = n*(n+1)/2    ->    O(n^2)
 二分法： n 不断二分直至分为 1，即以 2 为底 n 的对数，即 logn，若要 5 次才能得到一半则为 5logn。
-堆排序：建堆的复杂度为 O(n)，每次踢出元素后调整堆的复杂度为 O(nlogn)，踢出 n 个则为 O(nlogn)，总复杂度为 O(n + nlogn) -> O(nlogn)
+堆排序：建堆的复杂度为 O(n)，每次踢出元素后调整堆(heapify)的复杂度为 O(nlogn)，踢出 n 个则为 O(nlogn)，总复杂度为 O(n + nlogn) -> O(nlogn)
 3、range 的三种用法：
 range(5)：从 0 到 4
 range(4, 7)：从 4 到 6
@@ -174,5 +182,7 @@ range(4, 0, -2)：从 4 到 1 每次 -2
 4、最坏情况：
 快排：选择最左边为 pivot 点且原数据有序，退化为冒泡（即 pivot 点选得不好，是最大/最小）
 冒泡：原数据由大到小（逆序）
+5、为什么堆排序没有快排快
+第一、堆排序访问数据的方式没有快速排序友好。对于快速排序来说数据是顺序访问的，而对于堆排序来说数据是跳着访问的（叶节点是 2*p + 1）
+第二、对于同样的数据，在排序过程中，堆排序算法的数据交换次数要多于快速排序。堆排序的建堆过程会打乱数据原有的相对选择顺序，导致数据有序度降低。比如对于一组已经有序的数据来说，经过建堆之后，数据反而变得更无序了。
 """
-
