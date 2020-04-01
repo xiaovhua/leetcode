@@ -1,12 +1,5 @@
 import random
 class Solution_demo:
-    # ————————————————————————————————————————  快排  —————————————————————————————————————————————
-    """
-    时间复杂度O(nLog n)，最差时间复杂度O(n^2)，平均时间O(nLog n).因为用到了函数栈，空间复杂度为O(lg n),最差为O(n).是一种不稳定的排序方法。最坏情况下需 O(n) 的空间，最优情况下每次都平衡，O(logn)。
-    首先都要把 pivot 放在最左（右）边。
-    这里用的是单边循环：左边开始往右扫描，遇到比 pivot 小的放左边 i 处，最后把 pivot 放回 i+1 并 返回 i+1.
-    双边循环：左右同时扫描，左边遇到比 pivot 大的停止，右边遇到比 pivot 小的停止并与左边交换，左右指针重合停止并返回。
-    """
     def randomized_partition(self, nums, l, r): # 随机选择中间点对 nums 从 l 到 r 排序
         pivot = random.randint(l, r) # 选择比较点 pivot，比它小的左边比它大的右边，pivot 含 l 和 r
         nums[pivot], nums[r] = nums[r], nums[pivot] # 统一将 pivot 移到最右边
@@ -27,9 +20,6 @@ class Solution_demo:
         self.randomized_quicksort(nums, mid + 1, r)
 
     # ————————————————————————————————————————  堆排序  —————————————————————————————————————————————
-    """
-    最坏，最好，平均时间复杂度均为O(nlogn)，它是不稳定排序。
-    """
     def max_heapify(self, heap, root, heap_len): # heapify：调整一个完全二叉树，使其成为最大堆
         p = root # 根节点
         while p * 2 + 1 < heap_len: # 父节点是 p 时，其左右子节点为 2p+1 与 2p+2，父节点是 int((p-1)/2)，int 为下取整
